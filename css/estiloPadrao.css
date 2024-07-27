@@ -1,0 +1,89 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+select {
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+#bible-text {
+    border: 1px solid #ccc;
+    padding: 10px;
+    min-height: 300px;
+    font-size: 18px;
+}
+
+.btn-read-full-chapter {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+.none{
+    display: none;
+    
+}
+
+div.inline-unit {
+    display: inline-block;
+}
+
+.transcribed {
+    color: #7e7a7a;
+    font-size: smaller;
+}
+
+.notranscribed {
+    color: red;
+}
+.paragraph:nth-child(even){
+    background: #f2f2f2;
+}
+.paragraph:nth-child(odd){
+    background: #f2f2f2;
+}
+.paragraph{
+    display: flex;
+    margin: 9px;
+}
+.paragraph > div{
+    width: 50%;
+}
+#bible-text{
+    line-height: 1.5;
+}
+.paragrafo{
+    display:flex;
+    flex-wrap: wrap;
+}
+.paragrafo_pt{
+    display:flex;
+    flex-wrap: wrap;
+}
+.paragrafo_pt > p::first-line{
+    line-height: 1
+}
+.paragrafo_pt{
+    line-height: 3;
+}
