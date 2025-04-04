@@ -21,18 +21,31 @@ try {
 }
 
 function getChapter($conn, $book, $chapter) {
-    $stmt = $conn->prepare("SELECT * FROM capitulo WHERE livro = ? AND numero_cap = ?");
+    $stmt = $conn->prepare("SELECT c.*, p.transcricao_fonetica FROM capitulo c LEFT JOIN palavra_fonetica p ON c.livro = p.livro AND c.numero_cap = p.capitulo WHERE c.livro = ? AND c.numero_cap = ?");
     $stmt->bind_param("si", $book, $chapter);
     $stmt->execute();
     $result = $stmt->get_result();
     
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
+        $verses = explode("\n", $row['conteudo']);
+        $verses_pt = explode("\n", $row['conteudo_pt']);
+        $phonetics = $row['transcricao_fonetica'] ? explode("\n", $row['transcricao_fonetica']) : array_fill(0, count($verses), '');
+        
+        $formatted_verses = array();
+        for ($i = 0; $i < count($verses); $i++) {
+            $formatted_verses[] = [
+                'number' => $i + 1,
+                'text' => $verses[$i],
+                'text_pt' => $verses_pt[$i],
+                'phonetic' => isset($phonetics[$i]) ? $phonetics[$i] : ''
+            ];
+        }
+        
         return [
-            'content' => $row['conteudo'],
-            'content_pt' => $row['conteudo_pt'],
             'book' => $row['livro'],
-            'chapter' => $row['numero_cap']
+            'chapter' => $row['numero_cap'],
+            'verses' => $formatted_verses
         ];
     }
     return null;

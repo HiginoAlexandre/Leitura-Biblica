@@ -72,7 +72,37 @@ try {
     <!-- Container Principal -->
     <div class="container mt-4">
         <div class="bible-tabs" id="bible-tabs"></div>
-        <div class="bible-container" id="bible-content"></div>
+        <div class="bible-container" id="bible-content">
+            <?php
+            if (isset($_GET['book']) && isset($_GET['chapter'])) {
+                $stmt = $conn->prepare("SELECT * FROM capitulo WHERE livro = ? AND numero_cap = ?");
+                $stmt->bind_param("si", $_GET['book'], $_GET['chapter']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                
+                if ($result->num_rows > 0) {
+                    $row = $result->fetch_assoc();
+                    $conteudo = explode("\n", $row['conteudo']);
+                    $conteudo_pt = explode("\n", $row['conteudo_pt']);
+                    
+                    echo "<h2>{$row['livro']} {$row['numero_cap']}</h2>";
+                    echo "<div class='verses'>";
+                    
+                    for ($i = 0; $i < count($conteudo); $i++) {
+                        $verseNumber = $i + 1;
+                        echo "<div class='verse'>";
+                        echo "<span class='verse-number'>$verseNumber</span>";
+                        echo "<div class='verse-content'>";
+                        echo "<div class='verse-english'>{$conteudo[$i]}</div>";
+                        echo "<div class='verse-portuguese'>{$conteudo_pt[$i]}</div>";
+                        echo "</div></div>";
+                    }
+                    
+                    echo "</div>";
+                }
+            }
+            ?>
+        </div>
     </div>
 
     <!-- Controles do Usuário -->

@@ -24,42 +24,68 @@ body.dark-mode {
     color: var(--light-text);
 }
 
-/* Container de leitura */
-.bible-container {
-    background-color: inherit;
-    padding: 2rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+/* Estilos para o conteúdo bíblico */
+.verses {
+    padding: 20px;
 }
 
-/* Abas de leitura */
-.bible-tabs {
-    border-bottom: 1px solid var(--secondary-color);
-    margin-bottom: 1rem;
-}
-
-.bible-tab {
-    padding: 0.5rem 1rem;
-    margin-right: 0.25rem;
-    border-radius: 0.25rem 0.25rem 0 0;
-    cursor: pointer;
-}
-
-.bible-tab.active {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-/* Versículos */
 .verse {
-    margin-bottom: 1rem;
-    line-height: 1.6;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
 .verse-number {
     font-weight: bold;
-    color: var(--primary-color);
-    margin-right: 0.5rem;
+    color: #666;
+    min-width: 25px;
+}
+
+.verse-content {
+    flex: 1;
+}
+
+.verse-english {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.verse-portuguese {
+    color: #666;
+    font-style: italic;
+}
+
+.bible-tabs {
+    display: flex;
+    gap: 5px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.bible-tab {
+    padding: 8px 15px;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.bible-tab.active {
+    background: #fff;
+    border-bottom-color: #fff;
+    margin-bottom: -1px;
+}
+
+.close-tab {
+    margin-left: 8px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #999;
+}
+
+.close-tab:hover {
+    color: #333;
 }
 
 /* Transcrição fonética */
