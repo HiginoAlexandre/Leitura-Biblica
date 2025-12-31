@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bíblia IPA - Leitura com Transcrição Fonética</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Pro:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .chapter-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #4338ca;
+        }
+
+        .sticky-navigation {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .sticky-navigation {
+            display: none;
+            /* Inicialmente escondido */
+        }
+
+        .chapter-content:not(:empty)+.guide-section+.chapter-navigation~.sticky-navigation {
+            display: flex;
+            /* Mostrar quando houver conteúdo */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-book-bible"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>Bíblia IPA</h1>
+                    <p>Transcrição fonética internacional</p>
+                </div>
+            </div>
+            <div class="nav-controls">
+                <div class="theme-toggle">
+                    <button id="themeToggle" class="theme-btn">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                </div>
+                <div class="nav-stats">
+                    <div class="stat">
+                        <span class="stat-label">Palavras:</span>
+                        <span id="wordCount" class="stat-value">0</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Com IPA:</span>
+                        <span id="ipaCount" class="stat-value">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="main-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-compass"></i> Navegação</h2>
+            </div>
+
+            <div class="book-selector">
+                <div class="selector-group">
+                    <label for="livroSelect" class="selector-label">
+                        <i class="fas fa-book"></i> Livro
+                    </label>
+                    <div class="custom-select">
+                        <select id="livroSelect" class="select-element">
+                            <option value="">Carregando livros...</option>
+                        </select>
+                        <div class="select-arrow">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="selector-group">
+                    <label for="capituloSelect" class="selector-label">
+                        <i class="fas fa-list-ol"></i> Capítulo
+                    </label>
+                    <div class="custom-select">
+                        <select id="capituloSelect" class="select-element" disabled>
+                            <option value="">Selecione um livro</option>
+                        </select>
+                        <div class="select-arrow">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="btnLoadChapter" class="load-btn" disabled>
+                    <i class="fas fa-play-circle"></i>
+                    <span>Carregar Capítulo</span>
+                </button>
+
+                <div class="chapter-info">
+                    <div class="info-card">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="info-content">
+                            <h4>Como usar</h4>
+                            <p>Passe o mouse sobre qualquer palavra para ver a transcrição fonética (IPA)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-chapters">
+                <h3><i class="fas fa-history"></i> Recentes</h3>
+                <div id="recentList" class="recent-list">
+                    <div class="empty-recent">
+                        <i class="fas fa-clock"></i>
+                        <p>Nenhum capítulo recente</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <section class="content-area">
+            <div class="content-header">
+                <div class="chapter-title">
+                    <h2 id="currentChapter">Selecione um Capítulo</h2>
+                    <div class="chapter-meta">
+                        <span id="chapterStats" class="stats-badge">0 palavras • 0 com IPA</span>
+                    </div>
+                </div>
+                <div class="content-actions">
+                    <button id="toggleView" class="action-btn">
+                        <i class="fas fa-columns"></i>
+                        <span>Alternar Visualização</span>
+                    </button>
+                    <button id="printChapter" class="action-btn">
+                        <i class="fas fa-print"></i>
+                        <span>Imprimir</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading Indicator -->
+            <div id="loadingIndicator" class="loading-indicator">
+                <div class="loading-spinner">
+                    <div class="spinner-circle"></div>
+                    <div class="spinner-text">Carregando capítulo...</div>
+                </div>
+            </div>
+
+            <!-- Chapter Content -->
+            <div id="chapterContent" class="chapter-content">
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>Bem-vindo à Bíblia IPA</h3>
+                    <p>Selecione um livro e capítulo para começar a leitura com transcrição fonética.</p>
+                    <div class="empty-features">
+                        <div class="feature">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <span>Passe o mouse sobre as palavras</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-volume-up"></i>
+                            <span>Transcrição fonética (IPA)</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-language"></i>
+                            <span>Tradução em português</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transcription Guide -->
+            <div class="guide-section">
+                <h3><i class="fas fa-key"></i> Guia de Transcrição</h3>
+                <div class="guide-content">
+                    <div class="guide-item">
+                        <div class="guide-example found">
+                            <span class="guide-word">example</span>
+                            <span class="guide-ipa">/ɪɡˈzæmpəl/</span>
+                        </div>
+                        <p>Transcrição disponível</p>
+                    </div>
+                    <div class="guide-item">
+                        <div class="guide-example not-found">
+                            <span class="guide-word">unknown</span>
+                            <span class="guide-ipa">unknown</span>
+                        </div>
+                        <p>Transcrição não encontrada</p>
+                    </div>
+                    <div class="guide-item">
+                        <div class="guide-example composite">
+                            <span class="guide-word">well-known</span>
+                            <span class="guide-ipa">/wel - noʊn/</span>
+                        </div>
+                        <p>Palavra composta</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chapter Navigation -->
+            <div class="chapter-navigation">
+                <button id="prevChapter" class="nav-btn">
+                    <i class="fas fa-arrow-left"></i> Anterior
+                </button>
+                <button id="nextChapter" class="nav-btn">
+                    Próximo <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- Sticky Chapter Navigation -->
+            <div class="chapter-navigation sticky-navigation">
+                <button id="prevChapterSticky" class="nav-btn">
+                    <i class="fas fa-arrow-left"></i> Anterior
+                </button>
+                <button id="nextChapterSticky" class="nav-btn">
+                    Próximo <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Word Detail Modal -->
+    <div id="wordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Detalhes da Palavra</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="word-detail">
+                    <div class="word-original">
+                        <span id="modalWord">example</span>
+                    </div>
+                    <div class="word-ipa">
+                        <span class="ipa-label">Transcrição IPA:</span>
+                        <span id="modalIPA" class="ipa-value">/ɪɡˈzæmpəl/</span>
+                    </div>
+                    <div class="word-status">
+                        <span id="modalStatus" class="status-badge found">Disponível</span>
+                    </div>
+                    <div class="word-audio">
+                        <button id="playAudio" class="audio-btn">
+                            <i class="fas fa-play"></i>
+                            <span>Ouvir Pronúncia</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-book-bible"></i>
+                <span>Bíblia IPA</span>
+            </div>
+            <div class="footer-info">
+                <p>Sistema de leitura bíblica com transcrição fonética internacional (IPA)</p>
+                <p class="copyright">© 2024 Bíblia IPA • Desenvolvido com <i class="fas fa-heart"></i></p>
+            </div>
+            <div class="footer-links">
+                <a href="#" class="footer-link"><i class="fas fa-question-circle"></i> Ajuda</a>
+                <a href="#" class="footer-link"><i class="fas fa-envelope"></i> Contato</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>
